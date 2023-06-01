@@ -1,0 +1,9 @@
+.text-area-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.text-area{
+    width: 30vw;
+}
