@@ -9,6 +9,8 @@ import Button from "@mui/material/Button";
 import './ResultsComponent.css';
 import AiCodeService from "../../Services/AiCodeService";
 import { useNavigate } from "react-router-dom";
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 function ResultsComponent(props){
 
@@ -44,14 +46,24 @@ function ResultsComponent(props){
 
     const handleRegenerateCode = (e) => {
         e.preventDefault();
+        setCode(undefined);
         getAiCode();
     }
 
     return(
         <div>
             <form>
-                <p>{code}</p>
-                <ContentCopyIcon />
+                {
+                    code === undefined ?
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
+                            <CircularProgress />
+                        </Box>
+                        :
+                        <div>
+                            <p>{code}</p>
+                            <ContentCopyIcon />
+                        </div>
+                }
                 {
                     results.errors >= 1 ?
                         <Alert severity="error">
