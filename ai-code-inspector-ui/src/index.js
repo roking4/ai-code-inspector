@@ -1,17 +1,25 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './Components/Header/HeaderComponent.css';
 import reportWebVitals from './reportWebVitals';
 import HeaderComponent from "./Components/Header/HeaderComponent";
 import HomeComponent from "./Components/Home/HomeComponent";
 
+export default function App() {
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<HeaderComponent />}>
+                    <Route index element={<HomeComponent />} />
+                </Route>
+            </Routes>
+        </BrowserRouter>
+    );
+}
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-      <HeaderComponent />
-      <HomeComponent />
-  </React.StrictMode>
-);
+root.render(<App />);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
