@@ -9,31 +9,39 @@ import Button from "@mui/material/Button";
 import './ResultsComponent.css';
 
 function ResultsComponent(){
-    const [results, setResults] = useState([
-        {
-            index: 1,
-            inputs: "1, 2, horse",
-            output: 4,
-            pass: false
-        }
-    ]);
+    const [results, setResults] = useState({
+        code: "CodePlaceHolder",
+        errors: 0,
+        scenarios: [
+                {
+                    index: 1,
+                    inputs: "1, 2, horse",
+                    output: 4,
+                    pass: true
+                }
+            ]
+    });
 
     return(
         <div>
             <form>
-                <p>Code Placeholder</p>
+                <p>{results.code}</p>
                 <ContentCopyIcon />
-                <Alert severity="error">
-                    <AlertTitle>Error</AlertTitle>
-                    <strong>1 test failed!</strong>
-                </Alert>
-                <Alert severity="success">
-                    <AlertTitle>Success</AlertTitle>
-                    <strong>All 10 scenarios pass!</strong>
-                </Alert>
                 {
-                    results !== [] ?
-                        results.map((scenario) =>
+                    results.errors >= 1 ?
+                        <Alert severity="error">
+                            <AlertTitle>Error</AlertTitle>
+                            <strong>{results.errors} test failed!</strong>
+                        </Alert>
+                    :
+                        <Alert severity="success">
+                            <AlertTitle>Success</AlertTitle>
+                            <strong>All scenarios pass!</strong>
+                        </Alert>
+                }
+                {
+                    results.scenarios !== [] ?
+                        results.scenarios.map((scenario) =>
                             <div>
                                 <h2>
                                     Test Scenario {scenario.index}

@@ -1,3 +1,7 @@
 .new-prompt-button{
     margin-left: 2vw !important;
 }
+
+.MuiPaper-root{
+    margin-top: 4vw !important;
+}
