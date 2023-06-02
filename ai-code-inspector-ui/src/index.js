@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './Components/Header/HeaderComponent.css';
@@ -9,12 +9,14 @@ import ResultsComponent from "./Components/Results/ResultsComponent";
 import NotFoundComponent from "./Components/NotFound/NotFoundComponent";
 
 export default function App() {
+    const [prompt, setPrompt] = useState();
+    const [scenarios, setScenarios] = useState();
     return (
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Layout />}>
-                    <Route index element={<HomeComponent />} />
-                    <Route path={'results'} element={<ResultsComponent />} />
+                    <Route index element={ <HomeComponent setPrompt={ setPrompt } setScenarios={ setScenarios }/> } />
+                    <Route path={'results'} element={ <ResultsComponent prompt={ prompt } scenarios={ setScenarios }/> } />
                     <Route path={'*'} element={<NotFoundComponent />} />
                 </Route>
             </Routes>

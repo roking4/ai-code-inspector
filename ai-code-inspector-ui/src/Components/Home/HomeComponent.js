@@ -4,7 +4,7 @@ import { useState } from "react";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
-function HomeComponent() {
+function HomeComponent(props) {
 
     const [formPrompt, setFormPropmt] = useState("I would like a java function that ");
     const [scenarios, setScenarios] = useState([

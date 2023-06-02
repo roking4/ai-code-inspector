@@ -8,9 +8,11 @@ import { red } from '@mui/material/colors';
 import Button from "@mui/material/Button";
 import './ResultsComponent.css';
 import AiCodeService from "../../Services/AiCodeService";
+import { useNavigate } from "react-router-dom";
 
-function ResultsComponent(){
+function ResultsComponent(props){
 
+    const navigate = useNavigate();
     const [code, setCode] = useState();
     const [results, setResults] = useState({
         errors: 0,
@@ -25,11 +27,14 @@ function ResultsComponent(){
     });
 
     useEffect(() => {
+        if(!props.prompt || !props.scenarios){
+            navigate('/')
+        }
         getAiCode()
     }, []);
 
     const getAiCode = () => {
-        AiCodeService.getAiCode("Hello")
+        AiCodeService.getAiCode(props.prompt)
             .then((response) => {
                 setCode(response.data.code);
             }).catch((error) => {
