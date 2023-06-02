@@ -1,10 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './Components/HeaderComponent.css'
-import App from './App';
+import './Components/Header/HeaderComponent.css';
 import reportWebVitals from './reportWebVitals';
-import HeaderComponent from "./Components/HeaderComponent";
-import HomeComponent from "./Components/HomeComponent";
+import HeaderComponent from "./Components/Header/HeaderComponent";
+import HomeComponent from "./Components/Home/HomeComponent";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

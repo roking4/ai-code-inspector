@@ -1,0 +1,20 @@
+.textArea-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.text-area{
+    width: 30vw;
+    font-size: 12pt;
+    min-width: 250px;
+}
+
+.input{
+    padding-top: 2vw;
+}
+
+.add-button{
+    margin-top: 3vw !important;
+    margin-left: 2vw !important;
+}
