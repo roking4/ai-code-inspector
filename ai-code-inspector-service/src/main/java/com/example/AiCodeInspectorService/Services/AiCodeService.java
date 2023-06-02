@@ -53,6 +53,7 @@ public class AiCodeService implements IAiCodeService {
                     "\npublic static void main(String[] args) {" +
                     "\n");
             myWriter.write("\n}");
+            myWriter.write("\n" +  code);
             myWriter.write("\n}");
             myWriter.close();
             System.out.println("Successfully wrote to the file.");
