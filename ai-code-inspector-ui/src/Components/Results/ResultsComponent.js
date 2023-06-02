@@ -1,7 +1,7 @@
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded';
 import { red } from '@mui/material/colors';
