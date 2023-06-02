@@ -70,8 +70,8 @@ function ResultsComponent(){
                         )
                         : null
                 }
-                <Button variant="contained">Regenerate Code</Button>
-                <Button className={"new-prompt-button"} variant="contained">New Prompt</Button>
+                <Button href={ '/results' } variant="contained">Regenerate Code</Button>
+                <Button href={ '/' } className={ "new-prompt-button" } variant="contained">New Prompt</Button>
             </form>
         </div>
     );

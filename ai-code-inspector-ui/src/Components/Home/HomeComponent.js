@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 
 function HomeComponent() {
 
+    const [formPrompt, setFormPropmt] = useState("I would like a java function that ");
     const [scenarios, setScenarios] = useState([
         {
             index: 0,
@@ -14,7 +15,11 @@ function HomeComponent() {
         }
     ]);
 
-    function addScenario(){
+    const handlePromptChange = (e) =>{
+        setFormPropmt(e.target.value);
+    }
+
+    const addScenario = () => {
         const newScenario = {
             index: scenarios.length,
             numberOfInputs: [1],
@@ -23,7 +28,7 @@ function HomeComponent() {
         setScenarios([...scenarios, newScenario]);
     }
 
-    function addInput(index){
+    const addInput = (index) => {
         const oldNumberOfInputs = scenarios[index].numberOfInputs;
         const newNumberOfInputs = [...oldNumberOfInputs, oldNumberOfInputs.length + 1];
         const newScenarios = scenarios.map((scenario) => {
@@ -41,7 +46,7 @@ function HomeComponent() {
         setScenarios(newScenarios);
     }
 
-    function addOutput(index){
+    const addOutput = (index) => {
         const oldNumberOfOutputs = scenarios[index].numberOfOutputs;
         const newNumberOfOutputs = [...oldNumberOfOutputs, oldNumberOfOutputs.length + 1];
         const newScenarios = scenarios.map((scenario) => {
@@ -59,15 +64,21 @@ function HomeComponent() {
         setScenarios(newScenarios);
     }
 
+    const handleSubmit = (e) => {
+
+    }
+
     return (
         <div>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <div className={"textArea-container"}>
                     <TextareaAutosize
                         required
                         className={'text-area'}
                         minRows={6}
                         placeholder={"Prompt to AI"}
+                        value={ formPrompt }
+                        onChange={ handlePromptChange }
                     />
                 </div>
                 {
@@ -108,7 +119,7 @@ function HomeComponent() {
                     )
                 }
                 <Button className={ "add-button" } onClick={ addScenario } variant="contained">Add Scenario</Button>
-                <Button className={ "add-button" } variant="contained">Submit</Button>
+                <Button className={ "add-button" } disabled={ formPrompt === '' } variant="contained">Submit</Button>
             </form>
         </div>
     );
