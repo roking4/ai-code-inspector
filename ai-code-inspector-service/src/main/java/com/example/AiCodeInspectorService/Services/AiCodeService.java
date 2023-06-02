@@ -47,11 +47,14 @@ public class AiCodeService implements IAiCodeService {
 
     private void writeCodeToFile(String fileName, String code, String[] inputs, String[] outputs){
         String fileNameWithoutExtension = fileName.replace(".java", "");
+        String method = getMethodFromCode(code);
+        String methodName = getMethodName(method);
         try {
             FileWriter myWriter = new FileWriter(fileName);
             myWriter.write("public class " + fileNameWithoutExtension + " {" +
                     "\npublic static void main(String[] args) {" +
                     "\n");
+            myWriter.write("System.out.println(" + methodName + ");");
             myWriter.write("\n}");
             myWriter.write("\n" +  code);
             myWriter.write("\n}");
@@ -62,6 +65,16 @@ public class AiCodeService implements IAiCodeService {
             e.printStackTrace();
         }
 
+    }
+
+    private String getMethodName(String method){
+        String[] splitMethod = method.split("\\s+|\\(");
+        return splitMethod[2];
+    }
+
+    private String getMethodFromCode(String code){
+        String[] splitAiCode = code.split("\\{");
+        return splitAiCode[0];
     }
 
     private String createTestFile(){
