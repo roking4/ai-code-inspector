@@ -3,11 +3,13 @@ import TextareaAutosize from '@mui/base/TextareaAutosize';
 import { useState } from "react";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { useNavigate } from "react-router-dom";
 
 function HomeComponent(props) {
 
-    const [formPrompt, setFormPropmt] = useState("I would like a java function that ");
-    const [scenarios, setScenarios] = useState([
+    const navigate = useNavigate();
+    const [formPrompt, setFormPrompt] = useState("I would like a java function that ");
+    const [formScenarios, setFormScenarios] = useState([
         {
             index: 0,
             inputs: [""],
@@ -16,7 +18,7 @@ function HomeComponent(props) {
     ]);
 
     const handlePromptChange = (e) => {
-        setFormPropmt(e.target.value);
+        setFormPrompt(e.target.value);
     };
 
     const handleInputsChange = (e) => {
@@ -29,7 +31,7 @@ function HomeComponent(props) {
     };
 
     const changeInputValue = (scenarioIndex, inputIndex, newValue) => {
-        const oldInputsArray = scenarios[scenarioIndex].inputs;
+        const oldInputsArray = formScenarios[scenarioIndex].inputs;
         const newInputsArray = oldInputsArray.map((input) => {
             if(oldInputsArray.indexOf(input) === inputIndex){
                 return newValue
@@ -38,7 +40,7 @@ function HomeComponent(props) {
                 return input;
             }
         });
-        const newScenarios = scenarios.map((scenario) => {
+        const newScenarios = formScenarios.map((scenario) => {
             if (scenario.index === scenarioIndex){
                 return {
                     index: scenario.index,
@@ -50,7 +52,7 @@ function HomeComponent(props) {
                 return scenario;
             }
         });
-        setScenarios(newScenarios);
+        setFormScenarios(newScenarios);
     };
 
     const handleOutputsChange = (e) => {
@@ -63,7 +65,7 @@ function HomeComponent(props) {
     };
 
     const changeOutputValue = (scenarioIndex, outputIndex, newValue) => {
-        const oldInputsArray = scenarios[scenarioIndex].outputs;
+        const oldInputsArray = formScenarios[scenarioIndex].outputs;
         const newOutputsArray = oldInputsArray.map((output) => {
             if(oldInputsArray.indexOf(output) === outputIndex){
                 return newValue
@@ -72,7 +74,7 @@ function HomeComponent(props) {
                 return output;
             }
         });
-        const newScenarios = scenarios.map((scenario) => {
+        const newScenarios = formScenarios.map((scenario) => {
             if (scenario.index === scenarioIndex){
                 return {
                     index: scenario.index,
@@ -84,22 +86,22 @@ function HomeComponent(props) {
                 return scenario;
             }
         });
-        setScenarios(newScenarios);
+        setFormScenarios(newScenarios);
     };
 
     const addScenario = () => {
         const newScenario = {
-            index: scenarios.length,
+            index: formScenarios.length,
             inputs: [""],
             outputs: [""]
         };
-        setScenarios([...scenarios, newScenario]);
+        setFormScenarios([...formScenarios, newScenario]);
     };
 
     const addInputField = (index) => {
-        const oldInputsArray = scenarios[index].inputs;
+        const oldInputsArray = formScenarios[index].inputs;
         const newInputsArray = [...oldInputsArray, ""];
-        const newScenarios = scenarios.map((scenario) => {
+        const newScenarios = formScenarios.map((scenario) => {
             if (scenario.index === index){
                 return {
                     index: scenario.index,
@@ -111,13 +113,13 @@ function HomeComponent(props) {
                 return scenario;
             }
         });
-        setScenarios(newScenarios);
+        setFormScenarios(newScenarios);
     };
 
     const addOutputField = (index) => {
-        const oldOutputsArray = scenarios[index].outputs;
+        const oldOutputsArray = formScenarios[index].outputs;
         const newOutputsArray = [...oldOutputsArray, ""];
-        const newScenarios = scenarios.map((scenario) => {
+        const newScenarios = formScenarios.map((scenario) => {
             if (scenario.index === index){
                 return {
                     index: scenario.index,
@@ -129,11 +131,14 @@ function HomeComponent(props) {
                 return scenario;
             }
         });
-        setScenarios(newScenarios);
+        setFormScenarios(newScenarios);
     };
 
     const handleSubmit = (e) => {
-
+        e.preventDefault();
+        props.setPrompt(formPrompt);
+        props.setScenarios(formScenarios);
+        navigate('results');
     };
 
     return (
@@ -150,7 +155,7 @@ function HomeComponent(props) {
                     />
                 </div>
                 {
-                    scenarios.map((scenario) =>
+                    formScenarios.map((scenario) =>
                         <div key={ "scenario-container" + scenario.index } className={"scenario-container"}>
                             <h2 key={ "scenario-header" + scenario.index }>Test Scenario { scenario.index + 1 }</h2>
                             <div key={ "input-container" + scenario.index }>
@@ -193,7 +198,7 @@ function HomeComponent(props) {
                     )
                 }
                 <Button className={ "add-button" } onClick={ addScenario } variant="contained">Add Scenario</Button>
-                <Button className={ "add-button" } disabled={ formPrompt === '' } variant="contained">Submit</Button>
+                <Button className={ "add-button" } onClick={ handleSubmit } disabled={ formPrompt === '' } variant="contained">Submit</Button>
             </form>
         </div>
     );

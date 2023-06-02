@@ -30,7 +30,7 @@ public class AiCodeService implements IAiCodeService {
         OpenAiService service = new OpenAiService(key);
         CompletionRequest completionRequest = CompletionRequest.builder()
                 .prompt(prompt)
-                .model("ada")
+                .model("text-davinci-003")
                 .maxTokens(1000)
                 .echo(false)
                 .build();

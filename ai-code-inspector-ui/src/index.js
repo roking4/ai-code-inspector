@@ -16,7 +16,7 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Layout />}>
                     <Route index element={ <HomeComponent setPrompt={ setPrompt } setScenarios={ setScenarios }/> } />
-                    <Route path={'results'} element={ <ResultsComponent prompt={ prompt } scenarios={ setScenarios }/> } />
+                    <Route path={'results'} element={ <ResultsComponent prompt={ prompt } scenarios={ scenarios }/> } />
                     <Route path={'*'} element={<NotFoundComponent />} />
                 </Route>
             </Routes>
