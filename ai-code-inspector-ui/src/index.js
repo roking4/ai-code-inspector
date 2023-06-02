@@ -3,14 +3,14 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './Components/Header/HeaderComponent.css';
 import reportWebVitals from './reportWebVitals';
-import HeaderComponent from "./Components/Header/HeaderComponent";
+import Layout from "./Layout";
 import HomeComponent from "./Components/Home/HomeComponent";
 
 export default function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<HeaderComponent />}>
+                <Route path="/" element={<Layout />}>
                     <Route index element={<HomeComponent />} />
                 </Route>
             </Routes>

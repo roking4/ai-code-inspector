@@ -4,7 +4,7 @@ import { useState } from "react";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
-const HomeComponent = () => {
+function HomeComponent() {
     const [numberOfScenarios, setNumberOfScenarios] = useState([1]);
     const [numberOfInputs, setNumberOfInputs] = useState([1]);
     const [numberOfOutputs, setNumberOfOutputs] = useState([1]);
@@ -61,6 +61,6 @@ const HomeComponent = () => {
             </form>
         </div>
     );
-};
+}
 
 export default HomeComponent;
