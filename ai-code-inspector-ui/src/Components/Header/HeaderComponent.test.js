@@ -3,6 +3,6 @@ import HeaderComponent from './HeaderComponent';
 
 test('renders learn react link', () => {
   render(<HeaderComponent />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  const headerName = screen.getByText("AI Code Inspector");
+  expect(headerName).toBeInTheDocument();
 });
