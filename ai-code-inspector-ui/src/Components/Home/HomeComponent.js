@@ -21,30 +21,34 @@ const HomeComponent = () => {
                 </div>
                 {
                     numberOfScenarios.map((index) =>
-                        <div className={"scenario-container"}>
-                            <h2>Test Scenario {index}</h2>
-                            <div>
+                        <div key={"scenario-container" + index} className={"scenario-container"}>
+                            <h2 key={"scenario-header" + index}>Test Scenario {index}</h2>
+                            <div key={"input-container" + index}>
                                 {
                                     numberOfInputs.map((index) =>
-                                        <div className={"input"}>
+                                        <div key={"input" + index} className={"input"}>
                                             <TextField
+                                                key={"textField" + index}
                                                 id="outlined-basic"
                                                 label="Expected Input"
-                                                variant="outlined" />
-                                            <Button className={"add-button"} variant="contained">+</Button>
+                                                variant="outlined"
+                                            />
+                                            <Button key={"add-button-input" + index} className={"add-button"} variant="contained">+</Button>
                                         </div>
                                     )
                                 }
                             </div>
-                            <div>
+                            <div key={"output-container" + index}>
                                 {
                                     numberOfOutputs.map((index) =>
-                                        <div className={"input"}>
+                                        <div key={"output" + index} className={"input"}>
                                             <TextField
+                                                key={"textField" + index}
                                                 id="outlined-basic"
                                                 label="Expected Output"
-                                                variant="outlined" />
-                                            <Button className={"add-button"} variant="contained">+</Button>
+                                                variant="outlined"
+                                            />
+                                            <Button key={"add-button-output" + index} className={"add-button"} variant="contained">+</Button>
                                         </div>
                                     )
                                 }
