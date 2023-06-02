@@ -73,7 +73,7 @@ function HomeComponent() {
                 {
                     scenarios.map((scenario) =>
                         <div key={ "scenario-container" + scenario.index } className={"scenario-container"}>
-                            <h2 key={ "scenario-header" + scenario.index }>Test Scenario { scenario.index }</h2>
+                            <h2 key={ "scenario-header" + scenario.index }>Test Scenario { scenario.index + 1 }</h2>
                             <div key={ "input-container" + scenario.index }>
                                 {
                                     scenario.numberOfInputs.map((index) =>

@@ -9,8 +9,4 @@ public class AiCodeResponse {
     @Setter
     private String Code;
 
-    @Getter
-    @Setter
-    private Boolean Results [];
-
 }

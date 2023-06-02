@@ -9,11 +9,4 @@ public class AiCodeRequest {
     @Setter
     private String Prompt;
 
-    @Getter
-    @Setter
-    private String[] Inputs;
-
-    @Getter
-    @Setter
-    private String[] Outputs;
 }

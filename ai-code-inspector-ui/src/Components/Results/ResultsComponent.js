@@ -1,16 +1,18 @@
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded';
 import { red } from '@mui/material/colors';
 import Button from "@mui/material/Button";
 import './ResultsComponent.css';
+import AiCodeService from "../../Services/AiCodeService";
 
 function ResultsComponent(){
+
+    const [code, setCode] = useState();
     const [results, setResults] = useState({
-        code: "CodePlaceHolder",
         errors: 0,
         scenarios: [
                 {
@@ -22,10 +24,23 @@ function ResultsComponent(){
             ]
     });
 
+    useEffect(() => {
+        getAiCode()
+    }, []);
+
+    const getAiCode = () => {
+        AiCodeService.getAiCode("Hello")
+            .then((response) => {
+                setCode(response.data.code);
+            }).catch((error) => {
+                console.log(error);
+        });
+    }
+
     return(
         <div>
             <form>
-                <p>{results.code}</p>
+                <p>{code}</p>
                 <ContentCopyIcon />
                 {
                     results.errors >= 1 ?

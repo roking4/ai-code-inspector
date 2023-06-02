@@ -18,9 +18,11 @@ public class AiCodeService implements IAiCodeService {
 
     public AiCodeResponse getAiCodeAndResults(AiCodeRequest aiCodeRequest){
 
-        getCodeFromOpenAi(aiCodeRequest.getPrompt());
+        var code = getCodeFromOpenAi(aiCodeRequest.getPrompt());
+        AiCodeResponse aiResponse = new AiCodeResponse();
+        aiResponse.setCode(code);
 
-        return new AiCodeResponse();
+        return aiResponse;
 
     }
 
