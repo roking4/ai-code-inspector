@@ -5,6 +5,8 @@ import './Components/Header/HeaderComponent.css';
 import reportWebVitals from './reportWebVitals';
 import Layout from "./Layout";
 import HomeComponent from "./Components/Home/HomeComponent";
+import ResultsComponent from "./Components/Results/ResultsComponent";
+import NotFoundComponent from "./Components/NotFound/NotFoundComponent";
 
 export default function App() {
     return (
@@ -12,6 +14,8 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Layout />}>
                     <Route index element={<HomeComponent />} />
+                    <Route path={'results'} element={<ResultsComponent />} />
+                    <Route path={'*'} element={<NotFoundComponent />} />
                 </Route>
             </Routes>
         </BrowserRouter>

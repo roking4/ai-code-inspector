@@ -14,6 +14,7 @@ function HomeComponent() {
             <form>
                 <div className={"textArea-container"}>
                     <TextareaAutosize
+                        required
                         className={'text-area'}
                         minRows={6}
                         placeholder={"Prompt to AI"}
