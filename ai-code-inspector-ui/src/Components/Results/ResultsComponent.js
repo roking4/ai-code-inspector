@@ -42,6 +42,11 @@ function ResultsComponent(props){
         });
     }
 
+    const handleRegenerateCode = (e) => {
+        e.preventDefault();
+        getAiCode();
+    }
+
     return(
         <div>
             <form>
@@ -75,7 +80,7 @@ function ResultsComponent(props){
                         )
                         : null
                 }
-                <Button href={ '/results' } variant="contained">Regenerate Code</Button>
+                <Button onClick={ handleRegenerateCode } variant="contained">Regenerate Code</Button>
                 <Button href={ '/' } className={ "new-prompt-button" } variant="contained">New Prompt</Button>
             </form>
         </div>
