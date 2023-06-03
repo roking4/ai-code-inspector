@@ -36,6 +36,7 @@ public class AiCodeService implements IAiCodeService {
     public AiCodeTestResponse getAiCodeTestResults(AiCodeTestRequest aiCodeTestRequest){
 
         final String DIRECTORY = "testFiles";
+        final String RESULTS_FILE_EXTENSION = ".results";
 
         File createdFile = createTestFile(DIRECTORY);
 
@@ -52,7 +53,7 @@ public class AiCodeService implements IAiCodeService {
             return null;
         }
 
-        String[] compiled = compileJavaFile(createdFile);
+        String[] compiled = compileJavaFile(createdFile, RESULTS_FILE_EXTENSION);
 
         AiCodeTestResponse aiCodeTestResponse = new AiCodeTestResponse();
         aiCodeTestResponse.setScenarioResults(true);
@@ -61,20 +62,17 @@ public class AiCodeService implements IAiCodeService {
 
     }
 
-    private String[] compileJavaFile(File file) {
+    private String[] compileJavaFile(File file, String resultsFileExtension) {
 
         String osName = getOsName().toLowerCase();
 
         if(osName.contains("mac")){
             ProcessBuilder pb =
                     new ProcessBuilder("javac", file.getAbsolutePath());
-            File log = new File("testFiles/log");
             pb.redirectErrorStream(true);
-            pb.redirectOutput(ProcessBuilder.Redirect.appendTo(log));
             try {
                 Process p = pb.start();
                 assert pb.redirectInput() == ProcessBuilder.Redirect.PIPE;
-                assert pb.redirectOutput().file() == log;
                 assert p.getInputStream().read() == -1;
 
                 // Wait for the process to complete before running the program
@@ -86,7 +84,7 @@ public class AiCodeService implements IAiCodeService {
                     }catch(InterruptedException error){
 
                     }
-                    runProgram(file);
+                    runProgram(file, resultsFileExtension);
                 }
 
             }catch(IOException error){
@@ -103,22 +101,27 @@ public class AiCodeService implements IAiCodeService {
         return null;
     }
 
-    private void runProgram(File file){
-        String filePathWithoutExtension = file.getName().replace(".java", "");
+    private void runProgram(File file, String resultsFileExtension){
+        String fileNameWithoutExtension = file.getName().replace(".java", "");
         String parentDirectory = getParentDirectory(file);
         ProcessBuilder pb2 =
-                new ProcessBuilder("java", "-cp", parentDirectory, filePathWithoutExtension);
-        File log2 = new File("testFiles/log2");
+                new ProcessBuilder("java", "-cp", parentDirectory, fileNameWithoutExtension);
+        File resultsFile = createResultFile(file, resultsFileExtension);
         pb2.redirectErrorStream(true);
-        pb2.redirectOutput(ProcessBuilder.Redirect.appendTo(log2));
+        pb2.redirectOutput(ProcessBuilder.Redirect.appendTo(resultsFile));
         try {
             Process p2 = pb2.start();
             assert pb2.redirectInput() == ProcessBuilder.Redirect.PIPE;
-            assert pb2.redirectOutput().file() == log2;
+            assert pb2.redirectOutput().file() == resultsFile;
             assert p2.getInputStream().read() == -1;
         }catch(IOException error){
             System.out.println(error);
         }
+    }
+
+    private File createResultFile(File file, String resultsExtension){
+        String filePathWithoutExtension = file.getPath().replace(".java", resultsExtension);
+        return new File(filePathWithoutExtension);
     }
 
     private String getParentDirectory(File file){
