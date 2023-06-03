@@ -52,6 +52,10 @@ public class AiCodeService implements IAiCodeService {
 
         File resultsFile = compileJavaFile(createdFile, RESULTS_FILE_EXTENSION);
 
+        if(!resultsFile.exists()){
+            return null;
+        }
+
         boolean result = compareTests(request.getOutput(), resultsFile);
 
         AiCodeTestResponse aiCodeTestResponse = new AiCodeTestResponse();
@@ -107,7 +111,7 @@ public class AiCodeService implements IAiCodeService {
             return null;
         }
         return resultsFile;
-        
+
     }
 
     private File runProgram(File file, String resultsFileExtension){
