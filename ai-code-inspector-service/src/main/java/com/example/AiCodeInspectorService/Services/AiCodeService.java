@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AiCodeService implements IAiCodeService {
@@ -33,15 +35,24 @@ public class AiCodeService implements IAiCodeService {
 
     public AiCodeTestResponse getAiCodeTestResults(AiCodeTestRequest aiCodeTestRequest){
 
-        String fileName = createTestFile();
-        boolean createdFile = writeCodeToFile(fileName,
+        final String DIRECTORY = "testFiles";
+
+        File createdFile = createTestFile(DIRECTORY);
+
+        if(!createdFile.exists()){
+            return null;
+        }
+
+        boolean wroteToFile = writeCodeToFile(createdFile,
                 aiCodeTestRequest.getCode(),
                 aiCodeTestRequest.getInputs(),
                 aiCodeTestRequest.getOutputs());
 
-        if(!createdFile){
+        if(!wroteToFile){
             return null;
         }
+
+        String[] compiled = compileJavaFile(createdFile);
 
         AiCodeTestResponse aiCodeTestResponse = new AiCodeTestResponse();
         aiCodeTestResponse.setScenarioResults(true);
@@ -50,9 +61,78 @@ public class AiCodeService implements IAiCodeService {
 
     }
 
-    private boolean writeCodeToFile(String fileName, String code, String[] inputs, String[] outputs){
+    private String[] compileJavaFile(File file) {
+
+        String osName = getOsName().toLowerCase();
+
+        if(osName.contains("mac")){
+            ProcessBuilder pb =
+                    new ProcessBuilder("javac", file.getAbsolutePath());
+            File log = new File("testFiles/log");
+            pb.redirectErrorStream(true);
+            pb.redirectOutput(ProcessBuilder.Redirect.appendTo(log));
+            try {
+                Process p = pb.start();
+                assert pb.redirectInput() == ProcessBuilder.Redirect.PIPE;
+                assert pb.redirectOutput().file() == log;
+                assert p.getInputStream().read() == -1;
+
+                // Wait for the process to complete before running the program
+                boolean processComplete = false;
+                while(!processComplete) {
+                    try {
+                        p.waitFor();
+                        processComplete = true;
+                    }catch(InterruptedException error){
+
+                    }
+                    runProgram(file);
+                }
+
+            }catch(IOException error){
+                System.out.println(error);
+            }
+        }else if(osName.contains("win")){
+
+        }else if(osName.contains("lin")){
+
+        }else{
+            return null;
+        }
+
+        return null;
+    }
+
+    private void runProgram(File file){
+        String filePathWithoutExtension = file.getName().replace(".java", "");
+        String parentDirectory = getParentDirectory(file);
+        ProcessBuilder pb2 =
+                new ProcessBuilder("java", "-cp", parentDirectory, filePathWithoutExtension);
+        File log2 = new File("testFiles/log2");
+        pb2.redirectErrorStream(true);
+        pb2.redirectOutput(ProcessBuilder.Redirect.appendTo(log2));
+        try {
+            Process p2 = pb2.start();
+            assert pb2.redirectInput() == ProcessBuilder.Redirect.PIPE;
+            assert pb2.redirectOutput().file() == log2;
+            assert p2.getInputStream().read() == -1;
+        }catch(IOException error){
+            System.out.println(error);
+        }
+    }
+
+    private String getParentDirectory(File file){
+        String[] splitFile = file.getPath().split("/");
+        return splitFile[0];
+    }
+
+    private String getOsName(){
+        return System.getProperty("os.name");
+    }
+
+    private boolean writeCodeToFile(File file, String code, String[] inputs, String[] outputs){
+        String fileName = file.getName();
         String fileNameWithoutExtension = fileName.replace(".java", "");
-        String fileNameWithoutDirectory = fileNameWithoutExtension.replace("testFiles/", "");
         String method = getMethodFromCode(code);
         String methodName = getMethodName(method);
         String[] methodInputTypes = getListOfMethodInputTypes(method);
@@ -62,8 +142,8 @@ public class AiCodeService implements IAiCodeService {
             return false;
         }
         try {
-            FileWriter myWriter = new FileWriter(fileName);
-            myWriter.write("public class " + fileNameWithoutDirectory + " {" +
+            FileWriter myWriter = new FileWriter(file.getAbsolutePath());
+            myWriter.write("public class " + fileNameWithoutExtension + " {" +
                     "\npublic static void main(String[] args) {" +
                     "\n");
 
@@ -189,7 +269,7 @@ public class AiCodeService implements IAiCodeService {
 
     private String getMethodName(String method){
         String[] splitMethod = method.split("\\s+|\\(");
-        return splitMethod[2];
+        return splitMethod[3];
     }
 
     private String getMethodFromCode(String code){
@@ -197,17 +277,16 @@ public class AiCodeService implements IAiCodeService {
         return splitAiCode[0];
     }
 
-    private String createTestFile(){
+    private File createTestFile(String directory){
         int fileNumber = 0;
         String fileName = "";
         boolean isFileCreated = false;
         File file = new File("");
-        String directoryName = "testFiles";
-        createTestFileirectory(directoryName);
+        createTestFileirectory(directory);
         try {
             do {
                 fileName = "test" +  fileNumber + ".java";
-                file = new File(directoryName, fileName);
+                file = new File(directory, fileName);
                 if (file.createNewFile()) {
                     System.out.println("File created: " + file.getName());
                     isFileCreated = true;
@@ -220,7 +299,7 @@ public class AiCodeService implements IAiCodeService {
             System.out.println("An error occurred while creating a file.");
             e.printStackTrace();
         }
-        return file.getPath();
+        return file;
     }
 
     private void createTestFileirectory(String directoryName){
