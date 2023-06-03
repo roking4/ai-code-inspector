@@ -22,20 +22,32 @@ function ResultsComponent(props){
     const [scenarioLength, setScenarioLength] = useState(0);
     const navigate = useNavigate();
     const totalNumberOfScenarios = scenarioLength;
-    const [errors, setErrors] = useState(0);
+    const [errors, setErrors] = useState();
     const [scenarios, setScenarios] = useState(props.scenarios);
 
     const getResults = () => {
         scenarios.map((originalScenario) => {
             AiCodeService.getTestResults(props.aiCode, originalScenario.inputs, originalScenario.output)
                 .then((response) => {
+                    const result = response.data.scenarioResults;
+                    if(result === false){
+                        if(!errors){
+                            setErrors(1);
+                        }else {
+                            setErrors(errors + 1);
+                        }
+                    }else{
+                        if (!errors) {
+                            setErrors(0);
+                        }
+                    }
                     const newScenarios = scenarios.map((scenario) => {
                         if(scenario.index === originalScenario.index){
                             return {
                                 index: scenario.index,
                                 inputs: scenario.inputs,
                                 output: scenario.output,
-                                pass: response.data.scenarioResults
+                                pass: result
                             }
                             return scenario;
                         }
@@ -88,7 +100,7 @@ function ResultsComponent(props){
                             <AlertTitle>Error</AlertTitle>
                             <strong>{ errors } test(s) failed!</strong>
                         </Alert>
-                    :
+                        :
                         <Alert severity="success">
                             <AlertTitle>Success</AlertTitle>
                             <strong>All { totalNumberOfScenarios } scenarios pass!</strong>
