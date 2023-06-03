@@ -15,6 +15,6 @@ public class AiCodeTestRequest {
 
     @Getter
     @Setter
-    private String[] Outputs;
+    private String Output;
 
 }

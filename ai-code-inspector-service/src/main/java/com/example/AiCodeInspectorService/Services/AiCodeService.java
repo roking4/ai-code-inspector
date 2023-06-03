@@ -8,14 +8,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AiCodeService implements IAiCodeService {
@@ -33,7 +31,7 @@ public class AiCodeService implements IAiCodeService {
 
     }
 
-    public AiCodeTestResponse getAiCodeTestResults(AiCodeTestRequest aiCodeTestRequest){
+    public AiCodeTestResponse getAiCodeTestResults(AiCodeTestRequest request){
 
         final String DIRECTORY = "testFiles";
         final String RESULTS_FILE_EXTENSION = ".results";
@@ -45,77 +43,109 @@ public class AiCodeService implements IAiCodeService {
         }
 
         boolean wroteToFile = writeCodeToFile(createdFile,
-                aiCodeTestRequest.getCode(),
-                aiCodeTestRequest.getInputs(),
-                aiCodeTestRequest.getOutputs());
+                request.getCode(),
+                request.getInputs());
 
         if(!wroteToFile){
             return null;
         }
 
-        String[] compiled = compileJavaFile(createdFile, RESULTS_FILE_EXTENSION);
+        File resultsFile = compileJavaFile(createdFile, RESULTS_FILE_EXTENSION);
+
+        boolean result = compareTests(request.getOutput(), resultsFile);
 
         AiCodeTestResponse aiCodeTestResponse = new AiCodeTestResponse();
-        aiCodeTestResponse.setScenarioResults(true);
+        aiCodeTestResponse.setScenarioResults(result);
+
+        fileCleanUp(createdFile, resultsFile);
 
         return aiCodeTestResponse;
 
     }
 
-    private String[] compileJavaFile(File file, String resultsFileExtension) {
+    private boolean compareTests(String expectedOutput, File results){
+        try {
+            Scanner myReader = new Scanner(results);
+            while (myReader.hasNextLine()) {
+                if(expectedOutput.equalsIgnoreCase(myReader.nextLine())){
+                    return true;
+                }
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void fileCleanUp(File javaFile, File resultsFile){
+        String fullPath = javaFile.getAbsolutePath();
+        String classFileName = fullPath.replace(".java", ".class");
+        File classFile = new File(classFileName);
+        classFile.delete();
+        javaFile.delete();
+        resultsFile.delete();
+    }
+
+    private File compileJavaFile(File file, String resultsFileExtension) {
 
         String osName = getOsName().toLowerCase();
+        File resultsFile = null;
 
         if(osName.contains("mac")){
-            ProcessBuilder pb =
+            ProcessBuilder processBuilder =
                     new ProcessBuilder("javac", file.getAbsolutePath());
-            pb.redirectErrorStream(true);
-            try {
-                Process p = pb.start();
-                assert pb.redirectInput() == ProcessBuilder.Redirect.PIPE;
-                assert p.getInputStream().read() == -1;
-
-                // Wait for the process to complete before running the program
-                boolean processComplete = false;
-                while(!processComplete) {
-                    try {
-                        p.waitFor();
-                        processComplete = true;
-                    }catch(InterruptedException error){
-
-                    }
-                    runProgram(file, resultsFileExtension);
-                }
-
-            }catch(IOException error){
-                System.out.println(error);
-            }
+            processBuilder.redirectErrorStream(true);
+            startProcess(processBuilder, null);
+            resultsFile = runProgram(file, resultsFileExtension);
         }else if(osName.contains("win")){
-
+            return null;
         }else if(osName.contains("lin")){
-
+            return null;
         }else{
             return null;
         }
-
-        return null;
+        return resultsFile;
+        
     }
 
-    private void runProgram(File file, String resultsFileExtension){
+    private File runProgram(File file, String resultsFileExtension){
         String fileNameWithoutExtension = file.getName().replace(".java", "");
         String parentDirectory = getParentDirectory(file);
-        ProcessBuilder pb2 =
+        ProcessBuilder processBuilder =
                 new ProcessBuilder("java", "-cp", parentDirectory, fileNameWithoutExtension);
         File resultsFile = createResultFile(file, resultsFileExtension);
-        pb2.redirectErrorStream(true);
-        pb2.redirectOutput(ProcessBuilder.Redirect.appendTo(resultsFile));
+        processBuilder.redirectErrorStream(true);
+        processBuilder.redirectOutput(ProcessBuilder.Redirect.appendTo(resultsFile));
+        startProcess(processBuilder, resultsFile);
+        return resultsFile;
+    }
+
+    private void startProcess(ProcessBuilder processBuilder, File logFile){
         try {
-            Process p2 = pb2.start();
-            assert pb2.redirectInput() == ProcessBuilder.Redirect.PIPE;
-            assert pb2.redirectOutput().file() == resultsFile;
-            assert p2.getInputStream().read() == -1;
+            Process process = processBuilder.start();
+            assert processBuilder.redirectInput() == ProcessBuilder.Redirect.PIPE;
+            if(logFile != null) {
+                assert processBuilder.redirectOutput().file() == logFile;
+            }
+            assert process.getInputStream().read() == -1;
+            waitForProcessToComplete(process);
         }catch(IOException error){
             System.out.println(error);
+        }
+    }
+
+    private void waitForProcessToComplete(Process process){
+        // Wait for the process to complete before running the program
+        boolean processComplete = false;
+        while(!processComplete) {
+            try {
+                process.waitFor();
+                processComplete = true;
+            }catch(InterruptedException error){
+                System.out.println(error);
+            }
         }
     }
 
@@ -133,14 +163,14 @@ public class AiCodeService implements IAiCodeService {
         return System.getProperty("os.name");
     }
 
-    private boolean writeCodeToFile(File file, String code, String[] inputs, String[] outputs){
+    private boolean writeCodeToFile(File file, String code, String[] inputs){
         String fileName = file.getName();
         String fileNameWithoutExtension = fileName.replace(".java", "");
         String method = getMethodFromCode(code);
         String methodName = getMethodName(method);
         String[] methodInputTypes = getListOfMethodInputTypes(method);
         code = validateCode(code);
-        List<String[]> actualInputs = getActualInputs(inputs, method, methodInputTypes);
+        List<String[]> actualInputs = getActualInputs(inputs, methodInputTypes);
         if(actualInputs.size() == 0){
             return false;
         }
@@ -179,7 +209,7 @@ public class AiCodeService implements IAiCodeService {
         return newCode;
     }
 
-    private List<String[]> getActualInputs(String[] inputs, String method, String[] methodInputTypes){
+    private List<String[]> getActualInputs(String[] inputs, String[] methodInputTypes){
         List<String[]> differentCombinations = generateDifferentCombinations(inputs);
 
         List<String[]> actualCombinations = new ArrayList<>();
