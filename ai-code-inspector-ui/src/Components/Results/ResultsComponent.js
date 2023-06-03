@@ -16,7 +16,7 @@ function ResultsComponent(props){
 
     useEffect(() => {
         countScenarios();
-        convertInputsToStrings();
+        getResults();
     }, []);
 
     const [scenarioLength, setScenarioLength] = useState(0);
@@ -24,22 +24,35 @@ function ResultsComponent(props){
     const totalNumberOfScenarios = scenarioLength;
     const [errors, setErrors] = useState(0);
     const [scenarios, setScenarios] = useState(props.scenarios);
-    const [inputsString, setInputsString] = useState();
 
-    const convertInputsToStrings = () => {
-        const newScenarios = scenarios.map((scenario) => {
-            let inputString = "";
-            scenario.inputs.map((input) =>{
-                inputString += input + ", "
+    const getResults = () => {
+        scenarios.map((originalScenario) => {
+            AiCodeService.getTestResults(props.aiCode, originalScenario.inputs, originalScenario.output)
+                .then((response) => {
+                    const newScenarios = scenarios.map((scenario) => {
+                        if(scenario.index === originalScenario.index){
+                            return {
+                                index: scenario.index,
+                                inputs: scenario.inputs,
+                                output: scenario.output,
+                                pass: response.data.scenarioResults
+                            }
+                            return scenario;
+                        }
+                    });
+                    setScenarios(newScenarios);
+                }).catch((error) => {
+                    console.log(error);
             });
-            const finalString = inputString.slice(0, -2);
-            return {
-                index: scenario.index,
-                inputs: finalString,
-                output: scenario.output
-            };
         });
-        setScenarios(newScenarios);
+    };
+
+    const convertArrayToString = (list) => {
+        let inputString = "";
+        list.map((item) => {
+            inputString += item + ", "
+        });
+        return inputString.slice(0, -2);
     }
 
     const countScenarios = () => {
@@ -48,10 +61,6 @@ function ResultsComponent(props){
             i++;
         });
         setScenarioLength(i);
-    };
-
-    const getResults = () => {
-
     };
 
     const handleRegenerateCode = (e) => {
@@ -105,7 +114,7 @@ function ResultsComponent(props){
                                             </div>
                                     }
                                 </h2>
-                                <p>Inputs: [{ scenario.inputs }]</p>
+                                <p>Inputs: [{ convertArrayToString(scenario.inputs) }]</p>
                                 <p>Output: { scenario.output }</p>
                             </div>
                         )

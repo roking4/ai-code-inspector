@@ -41,7 +41,7 @@ public class AiCodeService implements IAiCodeService {
         }
 
         boolean wroteToFile = writeCodeToFile(createdFile,
-                request.getCode(),
+                request.getCode().trim(),
                 request.getInputs());
 
         if(!wroteToFile){

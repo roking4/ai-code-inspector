@@ -10,6 +10,14 @@ class AiCodeService{
             }
         );
     }
+    getTestResults(code, inputs, output) {
+        return axios.post(BASE_REST_API_URL + "/test", {
+                code: code,
+                inputs: inputs,
+                output: output
+            }
+        );
+    }
 }
 
 export default new AiCodeService();

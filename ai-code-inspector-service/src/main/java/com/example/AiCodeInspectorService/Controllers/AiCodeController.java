@@ -25,6 +25,10 @@ public class AiCodeController {
     @PostMapping("/test")
     public AiCodeTestResponse getAiCode(@RequestBody AiCodeTestRequest aiCodeTestRequest){
         AiCodeTestResponse response = aiCodeService.getAiCodeTestResults(aiCodeTestRequest);
+        if(response == null){
+            response = new AiCodeTestResponse();
+            response.setScenarioResults(false);
+        }
         return response;
     }
 
