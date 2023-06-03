@@ -14,80 +14,99 @@ import Box from '@mui/material/Box';
 
 function ResultsComponent(props){
 
-    const navigate = useNavigate();
-    const [code, setCode] = useState();
-    const [results, setResults] = useState({
-        errors: 0,
-        scenarios: [
-                {
-                    index: 1,
-                    inputs: "1, 2, horse",
-                    output: 4,
-                    pass: true
-                }
-            ]
-    });
-
     useEffect(() => {
-        if(!props.prompt || !props.scenarios){
-            navigate('/')
-        }
-        getAiCode()
+        countScenarios();
+        convertInputsToStrings();
     }, []);
 
-    const getAiCode = () => {
-        AiCodeService.getAiCode(props.prompt)
-            .then((response) => {
-                setCode(response.data.code);
-            }).catch((error) => {
-                console.log(error);
+    const [scenarioLength, setScenarioLength] = useState(0);
+    const navigate = useNavigate();
+    const totalNumberOfScenarios = scenarioLength;
+    const [errors, setErrors] = useState(0);
+    const [scenarios, setScenarios] = useState(props.scenarios);
+    const [inputsString, setInputsString] = useState();
+
+    const convertInputsToStrings = () => {
+        const newScenarios = scenarios.map((scenario) => {
+            let inputString = "";
+            scenario.inputs.map((input) =>{
+                inputString += input + ", "
+            });
+            const finalString = inputString.slice(0, -2);
+            return {
+                index: scenario.index,
+                inputs: finalString,
+                output: scenario.output
+            };
         });
+        setScenarios(newScenarios);
     }
+
+    const countScenarios = () => {
+        let i = 0;
+        props.scenarios.map((object) => {
+            i++;
+        });
+        setScenarioLength(i);
+    };
+
+    const getResults = () => {
+
+    };
 
     const handleRegenerateCode = (e) => {
         e.preventDefault();
-        setCode(undefined);
-        getAiCode();
+        navigate('/enter-tests');
     }
 
     return(
         <div>
             <form>
                 {
-                    code === undefined ?
+                    props.aiCode === undefined ?
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
                             <CircularProgress />
                         </Box>
                         :
                         <div>
-                            <p>{code}</p>
+                            <p>{ props.aiCode }</p>
                             <ContentCopyIcon />
                         </div>
                 }
                 {
-                    results.errors >= 1 ?
+                    errors >= 1 ?
                         <Alert severity="error">
                             <AlertTitle>Error</AlertTitle>
-                            <strong>{results.errors} test failed!</strong>
+                            <strong>{ errors } test(s) failed!</strong>
                         </Alert>
                     :
                         <Alert severity="success">
                             <AlertTitle>Success</AlertTitle>
-                            <strong>All scenarios pass!</strong>
+                            <strong>All { totalNumberOfScenarios } scenarios pass!</strong>
                         </Alert>
                 }
                 {
-                    results.scenarios !== [] ?
-                        results.scenarios.map((scenario) =>
+                    scenarios !== [] ?
+                        scenarios.map((scenario) =>
                             <div>
                                 <h2>
-                                    Test Scenario {scenario.index}
-                                    {scenario.pass === true ?
-                                        <CheckCircleRoundedIcon color="success" /> :
-                                        <ErrorRoundedIcon sx={{ color: red[500] }} />}
+                                    Test Scenario { scenario.index + 1 }
+                                    {
+                                        scenario.pass === undefined ?
+                                            <Box sx={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
+                                                <CircularProgress />
+                                            </Box> :
+                                            <div>
+                                                {
+                                                    scenario.pass === true ?
+                                                        <CheckCircleRoundedIcon color="success" /> :
+                                                        <ErrorRoundedIcon sx={{ color: red[500] }} />
+                                                }
+                                            </div>
+                                    }
                                 </h2>
-                                <p>Inputs: [{scenario.inputs}]</p>
-                                <p>Output: {scenario.output}</p>
+                                <p>Inputs: [{ scenario.inputs }]</p>
+                                <p>Output: { scenario.output }</p>
                             </div>
                         )
                         : null
