@@ -52,19 +52,22 @@ public class AiCodeService implements IAiCodeService {
 
     private boolean writeCodeToFile(String fileName, String code, String[] inputs, String[] outputs){
         String fileNameWithoutExtension = fileName.replace(".java", "");
+        String fileNameWithoutDirectory = fileNameWithoutExtension.replace("testFiles/", "");
         String method = getMethodFromCode(code);
         String methodName = getMethodName(method);
-        List<String[]> actualInputs = getActualInputs(inputs, method);
+        String[] methodInputTypes = getListOfMethodInputTypes(method);
+        code = validateCode(code);
+        List<String[]> actualInputs = getActualInputs(inputs, method, methodInputTypes);
         if(actualInputs.size() == 0){
             return false;
         }
         try {
             FileWriter myWriter = new FileWriter(fileName);
-            myWriter.write("public class " + fileNameWithoutExtension + " {" +
+            myWriter.write("public class " + fileNameWithoutDirectory + " {" +
                     "\npublic static void main(String[] args) {" +
                     "\n");
-            myWriter.write("System.out.println(" + methodName + ");\n");
-            writeLinesToFile();
+
+            writeLinesToFile(myWriter, methodName, actualInputs);
             myWriter.write("}");
             myWriter.write("\n" +  code);
             myWriter.write("\n}");
@@ -78,9 +81,24 @@ public class AiCodeService implements IAiCodeService {
         return false;
     }
 
-    private List<String[]> getActualInputs(String[] inputs, String method){
+    private String validateCode(String code){
+        String[] splitCode = code.split("\\s+");
+        String newCode = "";
+
+        if(splitCode[0].equalsIgnoreCase("public") && !splitCode[1].equalsIgnoreCase("static")){
+            newCode = code.replace("public ", "public static ");
+        } else if (splitCode[0].equalsIgnoreCase("private") && !splitCode[1].equalsIgnoreCase("static")) {
+            newCode = code.replace("private ","private static ");
+        }else {
+            return code;
+        }
+
+        return newCode;
+    }
+
+    private List<String[]> getActualInputs(String[] inputs, String method, String[] methodInputTypes){
         List<String[]> differentCombinations = generateDifferentCombinations(inputs);
-        String[] methodInputTypes = getListOfMethodInputTypes(method);
+
         List<String[]> actualCombinations = new ArrayList<>();
         if(methodInputTypes.length != inputs.length){
             return actualCombinations;
@@ -111,8 +129,21 @@ public class AiCodeService implements IAiCodeService {
         return actualCombinations;
     }
 
-    private void writeLinesToFile(){
-
+    private void writeLinesToFile(FileWriter myWriter, String methodName,  List<String[]> actualInputs){
+        for( String[] actualInput : actualInputs) {
+            String inputs = "";
+            for (int i = 0; i < actualInput.length; i++) {
+                inputs += actualInput[i];
+                if(i < actualInput.length - 1){
+                    inputs += ", ";
+                }
+            }
+            try {
+                myWriter.write("System.out.println(" + methodName + "(" + inputs + "));\n");
+            } catch (IOException error) {
+                System.out.println(error);
+            }
+        }
     }
 
     private static List<String[]> generateDifferentCombinations(String[] arr){
