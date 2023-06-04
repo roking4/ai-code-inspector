@@ -158,6 +158,10 @@ function EnterTests(props) {
         navigate('/results');
     };
 
+    const handleCopyToClipBoard = () => {
+        navigator.clipboard.writeText(code);
+    };
+
     return (
         <div>
             {
@@ -168,7 +172,7 @@ function EnterTests(props) {
                     :
                     <div>
                         <p>{code}</p>
-                        <ContentCopyIcon />
+                        <ContentCopyIcon onClick={ handleCopyToClipBoard } />
                         <Button className={ "add-button" } onClick={ handleRegenerateCode } variant="contained">Regenerate Code</Button>
                         <Button className={ "add-button" } onClick={ handleEnterNewPrompt } variant="contained">Enter New Prompt</Button>
                     </div>
@@ -180,7 +184,7 @@ function EnterTests(props) {
                         <div key={ "input-container" + scenario.index }>
                             {
                                 scenario.inputs.map((input) =>
-                                    <div key={ "input" + scenario.index + input.id } className={ "input" }>
+                                    <div key={ "input" + scenario.index + input.id }>
                                         <TextField
                                             key={ "textField" + scenario.index + input.id }
                                             className={ "input" }
