@@ -93,8 +93,19 @@ public class AiCodeService implements IAiCodeService {
         try {
             Scanner myReader = new Scanner(results);
             while (myReader.hasNextLine()) {
-                if(expectedOutput.equalsIgnoreCase(myReader.nextLine())){
+                String line = myReader.nextLine();
+                if(expectedOutput.equalsIgnoreCase(line)){
                     return true;
+                }else{
+                    try{
+                        double convertedToDouble = Double.parseDouble(expectedOutput);
+                        String convertBackToString = Double.toString(convertedToDouble);
+                        if(convertBackToString.equalsIgnoreCase(line)){
+                            return true;
+                        }
+                    }catch(Exception error){
+                        System.out.println(error);
+                    }
                 }
             }
             myReader.close();
@@ -192,10 +203,10 @@ public class AiCodeService implements IAiCodeService {
     private boolean writeCodeToFile(File file, String code, Input[] inputs){
         String fileName = file.getName();
         String fileNameWithoutExtension = fileName.replace(".java", "");
+        code = validateCode(code);
         String method = getMethodFromCode(code);
         String methodName = getMethodName(method);
         String[] methodInputTypes = getListOfMethodInputTypes(method);
-        code = validateCode(code);
         List<String[]> actualInputs = getActualInputs(inputs, methodInputTypes);
         if(actualInputs.size() == 0){
             return false;
