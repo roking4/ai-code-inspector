@@ -22,6 +22,9 @@ public class AiCodeService implements IAiCodeService {
     public AiCodeResponse getAiCode(AiCodeRequest aiCodeRequest){
 
         String code = getCodeFromOpenAi(aiCodeRequest.getPrompt());
+
+        code = stripWordsBeforeActualCode(code);
+
         AiCodeResponse aiCodeResponse = new AiCodeResponse();
         aiCodeResponse.setCode(code);
 
@@ -66,6 +69,18 @@ public class AiCodeService implements IAiCodeService {
 
         return aiCodeTestResponse;
 
+    }
+
+    private String stripWordsBeforeActualCode(String code){
+        String newCode = "";
+        String[] splitPublic = code.split("public ");
+        if(splitPublic.length > 1){
+            newCode = "public " + splitPublic[splitPublic.length - 1];
+        }else{
+            String[] splitPrivate = code.split("private ");
+            newCode = "private " + splitPrivate[splitPrivate.length - 1];
+        }
+        return newCode == "" ? code : newCode;
     }
 
     private int getNumberOfInputsFromCode(String code){
