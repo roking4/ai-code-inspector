@@ -56,7 +56,7 @@ function ResultsComponent(props){
     const convertArrayToString = (list) => {
         let inputString = "";
         list.map((item) => {
-            inputString += item + ", "
+            inputString += item.value + ", "
         });
         return inputString.slice(0, -2);
     }
@@ -103,25 +103,25 @@ function ResultsComponent(props){
                 {
                     scenarios !== [] ?
                         scenarios.map((scenario) =>
-                            <div>
-                                <h2>
+                            <div key={ "scenario" + scenario.index }>
+                                <h2 key={ "header" + scenario.index }>
                                     Test Scenario { scenario.index + 1 }
                                     {
                                         scenario.pass === undefined ?
-                                            <Box sx={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
-                                                <CircularProgress />
+                                            <Box key={ "box" + scenario.index } sx={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
+                                                <CircularProgress key={ "progress" + scenario.index } />
                                             </Box> :
-                                            <div>
+                                            <div key={ "check" + scenario.index }>
                                                 {
                                                     scenario.pass === true ?
-                                                        <CheckCircleRoundedIcon color="success" /> :
-                                                        <ErrorRoundedIcon sx={{ color: red[500] }} />
+                                                        <CheckCircleRoundedIcon key={ "check" + scenario.index } color="success" /> :
+                                                        <ErrorRoundedIcon key={ "wrong" + scenario.index } sx={{ color: red[500] }} />
                                                 }
                                             </div>
                                     }
                                 </h2>
-                                <p>Inputs: [{ convertArrayToString(scenario.inputs) }]</p>
-                                <p>Output: { scenario.output }</p>
+                                <p key={ "inputs" + scenario.index } >Inputs: [{ convertArrayToString(scenario.inputs) }]</p>
+                                <p key={ "output" + scenario.index } >Output: { scenario.output }</p>
                             </div>
                         )
                         : null

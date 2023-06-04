@@ -165,7 +165,7 @@ public class AiCodeService implements IAiCodeService {
         return System.getProperty("os.name");
     }
 
-    private boolean writeCodeToFile(File file, String code, String[] inputs){
+    private boolean writeCodeToFile(File file, String code, Input[] inputs){
         String fileName = file.getName();
         String fileNameWithoutExtension = fileName.replace(".java", "");
         String method = getMethodFromCode(code);
@@ -211,7 +211,7 @@ public class AiCodeService implements IAiCodeService {
         return newCode;
     }
 
-    private List<String[]> getActualInputs(String[] inputs, String[] methodInputTypes){
+    private List<String[]> getActualInputs(Input[] inputs, String[] methodInputTypes){
         List<String[]> differentCombinations = generateDifferentCombinations(inputs);
 
         List<String[]> actualCombinations = new ArrayList<>();
@@ -261,21 +261,27 @@ public class AiCodeService implements IAiCodeService {
         }
     }
 
-    private static List<String[]> generateDifferentCombinations(String[] arr){
+    private static List<String[]> generateDifferentCombinations(Input[] inputs){
+        String[] inputValues = new String[inputs.length];
+        int index = 0;
+        for(Input input : inputs){
+            inputValues[index] = input.getValue();
+            index++;
+        }
         List<String[]> result = new ArrayList<>();
-        if(arr.length == 2){
-            result.add(arr);
-            String[] tmp = {arr[1], arr[0]};
+        if(inputValues.length == 2){
+            result.add(inputValues);
+            String[] tmp = {inputValues[1], inputValues[0]};
             result.add(tmp);
         }
         else {
-            for (int i = 0; i < arr.length; i++) {
-                for (int j = 1; j <= arr.length - 1; j++) {
-                    String[] copyArray = arr.clone();
+            for (int i = 0; i < inputValues.length; i++) {
+                for (int j = 1; j <= inputValues.length - 1; j++) {
+                    String[] copyArray = inputValues.clone();
                     result.add(copyArray);
-                    arr = swap(1, arr);
+                    inputValues = swap(1, inputValues);
                 }
-                arr = swap(0, arr);
+                inputValues = swap(0, inputValues);
             }
         }
         return result;

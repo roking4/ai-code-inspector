@@ -43,7 +43,7 @@ function EnterTests(props) {
     const [formScenarios, setFormScenarios] = useState([
         {
             index: 0,
-            inputs: [""],
+            inputs: [{id: 0, value: ""}],
             output: ""
         }
     ]);
@@ -61,7 +61,7 @@ function EnterTests(props) {
         const oldInputsArray = formScenarios[scenarioIndex].inputs;
         const newInputsArray = oldInputsArray.map((input) => {
             if(oldInputsArray.indexOf(input) === inputIndex){
-                return newValue
+                return { id: input.id, value: newValue };
             }
             else{
                 return input;
@@ -89,7 +89,7 @@ function EnterTests(props) {
                     index: scenario.index,
                     inputs: scenario.inputs,
                     output: newValue
-                }
+                };
             }
             else{
                 return scenario;
@@ -101,7 +101,7 @@ function EnterTests(props) {
     const addScenario = () => {
         const newScenario = {
             index: formScenarios.length,
-            inputs: [""],
+            inputs: [{ id: 0, value: "" }],
             output: ""
         };
         setFormScenarios([...formScenarios, newScenario]);
@@ -109,7 +109,8 @@ function EnterTests(props) {
 
     const addInputField = (index) => {
         const oldInputsArray = formScenarios[index].inputs;
-        const newInputsArray = [...oldInputsArray, ""];
+        const newIndex = oldInputsArray.length
+        const newInputsArray = [...oldInputsArray, { id: newIndex, value: "" }];
         const newScenarios = formScenarios.map((scenario) => {
             if (scenario.index === index){
                 return {
@@ -162,14 +163,14 @@ function EnterTests(props) {
                         <div key={ "input-container" + scenario.index }>
                             {
                                 scenario.inputs.map((input) =>
-                                    <div key={ "input" + scenario.index + scenario.inputs.indexOf(input) } className={ "input" }>
+                                    <div key={ "input" + scenario.index + input.id } className={ "input" }>
                                         <TextField
-                                            key={ "textField" + scenario.index + scenario.inputs.indexOf(input) }
+                                            key={ "textField" + scenario.index + input.id }
                                             id="outlined-basic"
                                             label="Expected Input"
                                             variant="outlined"
-                                            value={ input }
-                                            name={ scenario.index + '-' + scenario.inputs.indexOf(input) }
+                                            value={ input.value }
+                                            name={ scenario.index + '-' + input.id }
                                             onChange={ handleInputsChange }
                                         />
                                     </div>
@@ -179,6 +180,7 @@ function EnterTests(props) {
                         </div>
                         <div key={ "output-container" + scenario.index }>
                             <TextField
+                                key={ "output-textfield" + scenario.index }
                                 id="outlined-basic"
                                 label="Expected Output"
                                 variant="outlined"

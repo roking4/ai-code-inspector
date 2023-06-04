@@ -3,18 +3,14 @@ package com.example.AiCodeInspectorService.Models;
 import lombok.Getter;
 import lombok.Setter;
 
-public class AiCodeTestRequest {
+public class Input {
 
     @Getter
     @Setter
-    private String Code;
+    private String Id;
 
     @Getter
     @Setter
-    private Input[] Inputs;
-
-    @Getter
-    @Setter
-    private String Output;
+    private String Value;
 
 }
