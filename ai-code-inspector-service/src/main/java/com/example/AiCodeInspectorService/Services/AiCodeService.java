@@ -306,13 +306,14 @@ public class AiCodeService implements IAiCodeService {
     }
 
     private String[] getListOfMethodInputTypes(String method){
-        String[] methodSplit = method.split("\\s+|\\(|\\)");
-        int maxArrayNumber = (methodSplit.length - 3) / 2;
+        String[] methodSplit = method.split("\\(");
+        String[] allInputs = methodSplit[1].split("\\)");
+        int maxArrayNumber = allInputs.length;
         String[] inputTypes = new String[maxArrayNumber];
-        int j = 3;
+        String[] splitInputs = allInputs[0].split(",");
         for(int i = 0; i < inputTypes.length; i++) {
-            inputTypes[i] = methodSplit[j];
-            j = j + 2;
+            String[] inputs = splitInputs[i].trim().split("\\s+");
+            inputTypes[i] = inputs[0];
         }
         return inputTypes;
     }
