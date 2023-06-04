@@ -12,6 +12,8 @@ function EnterTests(props) {
 
     const navigate = useNavigate();
     const [code, setCode] = useState();
+    const [defaultInputArray, setDefaultInputArray] = useState([]);
+    const [formScenarios, setFormScenarios] = useState([]);
 
     useEffect(() => {
         if(!props.prompt){
@@ -23,11 +25,32 @@ function EnterTests(props) {
     const getAiCode = () => {
         AiCodeService.getAiCode(props.prompt)
             .then((response) => {
+                const data = response.data;
+                const inputKeys = getDefaultInputs(data.numberOfInputs);
                 setCode(response.data.code);
+                setDefaultInputArray(inputKeys);
+                setFormScenarios([
+                    {
+                        index: 0,
+                        inputs: inputKeys,
+                        output: ""
+                    }
+                ]);
             }).catch((error) => {
             console.log(error);
         });
     }
+
+    const getDefaultInputs = (numberOfInputs) => {
+        let defaultInputArray = [];
+        for(let i = 0; i < numberOfInputs; i++){
+            defaultInputArray.push({
+                id: i,
+                value: ""
+            });
+        }
+        return defaultInputArray;
+    };
 
     const handleRegenerateCode = (e) => {
         e.preventDefault();
@@ -40,13 +63,7 @@ function EnterTests(props) {
         navigate("/");
     }
 
-    const [formScenarios, setFormScenarios] = useState([
-        {
-            index: 0,
-            inputs: [{id: 0, value: ""}],
-            output: ""
-        }
-    ]);
+
 
     const handleInputsChange = (e) => {
         e.preventDefault();
@@ -101,7 +118,7 @@ function EnterTests(props) {
     const addScenario = () => {
         const newScenario = {
             index: formScenarios.length,
-            inputs: [{ id: 0, value: "" }],
+            inputs: defaultInputArray,
             output: ""
         };
         setFormScenarios([...formScenarios, newScenario]);
@@ -166,6 +183,7 @@ function EnterTests(props) {
                                     <div key={ "input" + scenario.index + input.id } className={ "input" }>
                                         <TextField
                                             key={ "textField" + scenario.index + input.id }
+                                            className={ "input" }
                                             id="outlined-basic"
                                             label="Expected Input"
                                             variant="outlined"
@@ -176,11 +194,11 @@ function EnterTests(props) {
                                     </div>
                                 )
                             }
-                            <Button key={ "add-button-input" + scenario.index } className={ "add-button" } onClick={ () => addInputField(scenario.index) } variant="contained">+</Button>
                         </div>
                         <div key={ "output-container" + scenario.index }>
                             <TextField
                                 key={ "output-textfield" + scenario.index }
+                                className={ "input" }
                                 id="outlined-basic"
                                 label="Expected Output"
                                 variant="outlined"
