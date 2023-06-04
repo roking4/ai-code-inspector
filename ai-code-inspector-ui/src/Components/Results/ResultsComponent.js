@@ -26,7 +26,9 @@ function ResultsComponent(props){
     const [scenarios, setScenarios] = useState(props.scenarios);
 
     const getResults = () => {
-        scenarios.map((originalScenario) => {
+        let newScenarios = [];
+        let scenariosCopy = scenarios.map((scenario) => ({...scenario}));
+        scenariosCopy.map((originalScenario) => {
             AiCodeService.getTestResults(props.aiCode, originalScenario.inputs, originalScenario.output)
                 .then((response) => {
                     const result = response.data.scenarioResults;
@@ -41,22 +43,14 @@ function ResultsComponent(props){
                             setErrors(0);
                         }
                     }
-                    const newScenarios = scenarios.map((scenario) => {
-                        if(scenario.index === originalScenario.index){
-                            return {
-                                index: scenario.index,
-                                inputs: scenario.inputs,
-                                output: scenario.output,
-                                pass: result
-                            }
-                            return scenario;
-                        }
-                    });
-                    setScenarios(newScenarios);
+                    const newScenario = scenarios[originalScenario.index];
+                    newScenario.pass = result;
+                    newScenarios.push(newScenario);
                 }).catch((error) => {
                     console.log(error);
             });
         });
+        setScenarios(newScenarios);
     };
 
     const convertArrayToString = (list) => {
