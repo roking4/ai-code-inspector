@@ -21,9 +21,12 @@ public class AiCodeService implements IAiCodeService {
 
     public AiCodeResponse getAiCode(AiCodeRequest aiCodeRequest){
 
-        var code = getCodeFromOpenAi(aiCodeRequest.getPrompt());
+        String code = getCodeFromOpenAi(aiCodeRequest.getPrompt());
         AiCodeResponse aiCodeResponse = new AiCodeResponse();
         aiCodeResponse.setCode(code);
+
+        int numberOfInputs = getNumberOfInputsFromCode(code);
+        aiCodeResponse.setNumberOfInputs(numberOfInputs);
 
         return aiCodeResponse;
 
@@ -63,6 +66,12 @@ public class AiCodeService implements IAiCodeService {
 
         return aiCodeTestResponse;
 
+    }
+
+    private int getNumberOfInputsFromCode(String code){
+        String method = getMethodFromCode(code);
+        String[] methodInputTypes = getListOfMethodInputTypes(method);
+        return methodInputTypes.length;
     }
 
     private boolean compareTests(String expectedOutput, File results){
