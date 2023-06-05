@@ -1,8 +1,8 @@
 import './EnterTests.css';
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AiCodeService from "../../Services/AiCodeService";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
