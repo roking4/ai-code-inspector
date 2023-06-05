@@ -4,9 +4,7 @@ import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AiCodeService from "../../Services/AiCodeService";
-import Box from "@mui/material/Box";
-import CircularProgress from "@mui/material/CircularProgress";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import DisplayCodeComponent from "../DisplayCodeComponent/DisplayCodeComponent";
 
 function EnterTests(props) {
 
@@ -158,24 +156,26 @@ function EnterTests(props) {
         navigate('/results');
     };
 
-    const handleCopyToClipBoard = () => {
-        navigator.clipboard.writeText(code);
-    };
-
     return (
         <div>
+            <DisplayCodeComponent code={code} />
             {
-                code === undefined ?
-                    <Box sx={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
-                        <CircularProgress />
-                    </Box>
-                    :
-                    <div>
-                        <p>{code}</p>
-                        <ContentCopyIcon onClick={ handleCopyToClipBoard } />
-                        <Button className={ "add-button" } onClick={ handleRegenerateCode } variant="contained">Regenerate Code</Button>
-                        <Button className={ "add-button" } onClick={ handleEnterNewPrompt } variant="contained">Enter New Prompt</Button>
+                code !== undefined ?
+                    <div className={ "code-buttons-container" }>
+                        <Button
+                            className={"add-button"}
+                            onClick={handleRegenerateCode}
+                            variant="contained">
+                            Regenerate Code
+                        </Button>
+                        <Button
+                            className={"add-button"}
+                            onClick={handleEnterNewPrompt}
+                            variant="contained">
+                            Enter New Prompt
+                        </Button>
                     </div>
+                : null
             }
             {
                 formScenarios.map((scenario) =>

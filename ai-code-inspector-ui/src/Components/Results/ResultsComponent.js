@@ -1,6 +1,5 @@
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useEffect, useState } from "react";
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded';
@@ -11,6 +10,7 @@ import AiCodeService from "../../Services/AiCodeService";
 import { useNavigate } from "react-router-dom";
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import DisplayCodeComponent from "../DisplayCodeComponent/DisplayCodeComponent";
 
 function ResultsComponent(props){
 
@@ -77,17 +77,7 @@ function ResultsComponent(props){
     return(
         <div>
             <form>
-                {
-                    props.aiCode === undefined ?
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
-                            <CircularProgress />
-                        </Box>
-                        :
-                        <div>
-                            <p>{ props.aiCode }</p>
-                            <ContentCopyIcon />
-                        </div>
-                }
+                <DisplayCodeComponent code={props.aiCode} />
                 {
                     errors >= 1 ?
                         <Alert severity="error">
