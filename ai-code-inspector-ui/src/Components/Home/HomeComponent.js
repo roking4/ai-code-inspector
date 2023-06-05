@@ -22,7 +22,7 @@ function HomeComponent(props) {
     return (
         <div className={ "home-container" }>
             <form onSubmit={ handleSubmit }>
-                <div className={"textArea-container"}>
+                <div className={"text-area-container"}>
                     <TextareaAutosize
                         required
                         className={'text-area'}
