@@ -77,7 +77,7 @@ function ResultsComponent(props){
     }
 
     return(
-        <div>
+        <div className={ "results-container" } >
             <form>
                 <DisplayCodeComponent code={props.aiCode} />
                 {

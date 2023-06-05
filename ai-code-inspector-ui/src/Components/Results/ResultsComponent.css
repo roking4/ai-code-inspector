@@ -5,3 +5,19 @@
 .MuiPaper-root{
     margin-top: 4vw !important;
 }
+
+.results-container{
+    margin: auto;
+    width: 60vw;
+    max-width: 750px;
+    min-width: 260px;
+}
+
+Button{
+    margin: 1vw !important;;
+}
+
+h2 > div{
+    display: inline;
+    margin-left: 2vw;
+}
