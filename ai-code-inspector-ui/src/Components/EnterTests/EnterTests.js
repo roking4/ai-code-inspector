@@ -157,7 +157,7 @@ function EnterTests(props) {
     };
 
     return (
-        <div>
+        <div className={ "enter-tests-container" }>
             <DisplayCodeComponent code={code} />
             {
                 code !== undefined ?
@@ -182,6 +182,7 @@ function EnterTests(props) {
                     <div key={ "scenario-container" + scenario.index } className={"scenario-container"}>
                         <h2 key={ "scenario-header" + scenario.index }>Test Scenario { scenario.index + 1 }</h2>
                         <div key={ "input-container" + scenario.index }>
+                            <span key={ "span-inputs" + scenario.index } ><b>Inputs:</b></span>
                             {
                                 scenario.inputs.map((input) =>
                                     <div key={ "input" + scenario.index + input.id }>
@@ -189,7 +190,7 @@ function EnterTests(props) {
                                             key={ "textField" + scenario.index + input.id }
                                             className={ "input" }
                                             id="outlined-basic"
-                                            label="Expected Input"
+                                            label="Input Value"
                                             variant="outlined"
                                             value={ input.value }
                                             name={ scenario.index + '-' + input.id }
@@ -200,6 +201,7 @@ function EnterTests(props) {
                             }
                         </div>
                         <div key={ "output-container" + scenario.index }>
+                            <span className={ "output-span" } key={ "span-output" + scenario.index } ><b>Expected Output:</b></span>
                             <TextField
                                 key={ "output-textfield" + scenario.index }
                                 className={ "input" }

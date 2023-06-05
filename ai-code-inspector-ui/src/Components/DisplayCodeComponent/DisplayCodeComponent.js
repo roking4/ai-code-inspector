@@ -1,6 +1,7 @@
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import "./DisplayCodeComponent.css"
 
 function DisplayCodeComponent(props) {
 
@@ -18,7 +19,9 @@ function DisplayCodeComponent(props) {
                     :
                     <div>
                         <p>{ props.code }</p>
-                        <ContentCopyIcon onClick={ handleCopyToClipBoard }/>
+                        <div className={ "copy-icon-container" } >
+                            <ContentCopyIcon onClick={ handleCopyToClipBoard }/>
+                        </div>
                     </div>
             }
         </div>

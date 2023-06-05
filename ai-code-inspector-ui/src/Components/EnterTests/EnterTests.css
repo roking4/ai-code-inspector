@@ -1,3 +1,19 @@
 .input{
     margin-top: 2vw !important;
 }
+
+.enter-tests-container{
+    margin: auto;
+    width: 60vw;
+    max-width: 750px;
+    min-width: 260px;
+}
+
+.output-span{
+    display: block;
+    margin-top: 4vw;
+}
+
+Button{
+    margin: 1vw !important;;
+}
