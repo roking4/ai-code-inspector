@@ -8,6 +8,7 @@
     margin: auto;
     width: 60vw;
     max-width: 750px;
+    min-width: 260px;
 }
 
 .text-area{
