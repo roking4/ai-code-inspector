@@ -214,8 +214,8 @@ function EnterTests(props) {
                     </div>
                 )
             }
-        <Button className={ "add-button" } onClick={ addScenario } variant="contained">Add Scenario</Button>
-        <Button className={ "add-button" } onClick={ handleRunTestsButton } variant="contained">Run Tests</Button>
+        <Button className={ "add-button" } style={ code === undefined ? {display: "none"} : { }} hidden={ code === undefined } onClick={ addScenario } variant="contained">Add Scenario</Button>
+        <Button className={ "add-button" } style={ code === undefined ? {display: "none"} : { }} hidden={ code === undefined } onClick={ handleRunTestsButton } variant="contained">Run Tests</Button>
         </div>
     );
 }
