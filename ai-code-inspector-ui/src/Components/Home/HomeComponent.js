@@ -20,19 +20,21 @@ function HomeComponent(props) {
     };
 
     return (
-        <div>
+        <div className={ "home-container" }>
             <form onSubmit={ handleSubmit }>
                 <div className={"textArea-container"}>
                     <TextareaAutosize
                         required
                         className={'text-area'}
-                        minRows={6}
+                        minRows={ 8 }
                         placeholder={"Prompt to AI"}
                         value={ formPrompt }
                         onChange={ handlePromptChange }
                     />
                 </div>
-                <Button className={ "add-button" } onClick={ handleSubmit } disabled={ formPrompt === '' } variant="contained">Submit</Button>
+                <div className={ "button-container" }>
+                    <Button className={ "add-button" } onClick={ handleSubmit } disabled={ formPrompt === '' } variant="contained">Submit</Button>
+                </div>
             </form>
         </div>
     );

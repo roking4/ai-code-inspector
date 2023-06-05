@@ -4,17 +4,26 @@
     justify-content: center;
 }
 
+.home-container{
+    margin: auto;
+    width: 60vw;
+    max-width: 750px;
+}
+
 .text-area{
-    width: 30vw;
+    width: 100% !important;
     font-size: 12pt;
-    min-width: 250px;
 }
 
 .input{
     padding-top: 2vw;
 }
 
+.button-container{
+    display: flex;
+    justify-content: right;
+}
+
 .add-button{
     margin-top: 3vw !important;
-    margin-left: 2vw !important;
 }
