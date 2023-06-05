@@ -24,6 +24,7 @@ function ResultsComponent(props){
     const totalNumberOfScenarios = scenarioLength;
     const [errors, setErrors] = useState();
     const [scenarios, setScenarios] = useState(props.scenarios);
+    const [displayAlert, setDisplayAlert] = useState(false);
 
     const getResults = () => {
         let newScenarios = [];
@@ -46,6 +47,7 @@ function ResultsComponent(props){
                     const newScenario = scenarios[originalScenario.index];
                     newScenario.pass = result;
                     newScenarios.push(newScenario);
+                    setDisplayAlert(true);
                 }).catch((error) => {
                     console.log(error);
             });
@@ -79,16 +81,21 @@ function ResultsComponent(props){
             <form>
                 <DisplayCodeComponent code={props.aiCode} />
                 {
-                    errors >= 1 ?
-                        <Alert severity="error">
-                            <AlertTitle>Error</AlertTitle>
-                            <strong>{ errors } test(s) failed!</strong>
-                        </Alert>
+                    displayAlert === true ?
+                        errors >= 1 ?
+                            <Alert severity="error">
+                                <AlertTitle>Error</AlertTitle>
+                                <strong>{ errors } test(s) failed!</strong>
+                            </Alert>
+                            :
+                            <Alert severity="success">
+                                <AlertTitle>Success</AlertTitle>
+                                <strong>All { totalNumberOfScenarios } scenarios pass!</strong>
+                            </Alert>
                         :
-                        <Alert severity="success">
-                            <AlertTitle>Success</AlertTitle>
-                            <strong>All { totalNumberOfScenarios } scenarios pass!</strong>
-                        </Alert>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
+                            <CircularProgress />
+                        </Box>
                 }
                 {
                     scenarios !== [] ?
@@ -100,7 +107,8 @@ function ResultsComponent(props){
                                         scenario.pass === undefined ?
                                             <Box key={ "box" + scenario.index } sx={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
                                                 <CircularProgress key={ "progress" + scenario.index } />
-                                            </Box> :
+                                            </Box>
+                                            :
                                             <div key={ "check" + scenario.index }>
                                                 {
                                                     scenario.pass === true ?
