@@ -269,6 +269,8 @@ public class AiCodeService implements IAiCodeService {
                         case "float":
                             Float.parseFloat(combination[i]);
                             break;
+                        default:
+                            combination[i] = "\"" + combination[i] + "\"";
                     }
                 }
                 actualCombinations.add(combination);
