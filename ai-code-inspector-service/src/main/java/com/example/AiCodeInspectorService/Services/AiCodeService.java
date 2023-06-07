@@ -274,8 +274,8 @@ public class AiCodeService implements IAiCodeService {
                     }
                 }
                 actualCombinations.add(combination);
-            }catch (Exception e){
-
+            }catch (Exception error){
+                System.out.print(error);
             }
         }
         return actualCombinations;
