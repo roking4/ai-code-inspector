@@ -247,6 +247,7 @@ public class AiCodeService implements IAiCodeService {
     }
 
     private List<String[]> getActualInputs(Input[] inputs, String[] methodInputTypes){
+
         List<String[]> differentCombinations = generateDifferentCombinations(inputs);
 
         List<String[]> actualCombinations = new ArrayList<>();
@@ -299,13 +300,21 @@ public class AiCodeService implements IAiCodeService {
     }
 
     private static List<String[]> generateDifferentCombinations(Input[] inputs){
+
+        List<String[]> result = new ArrayList<>();
+        if(inputs.length == 1){
+            String getValue = inputs[0].getValue();
+            String[] tmpArray = {getValue};
+            result.add(tmpArray);
+            return result;
+        }
+
         String[] inputValues = new String[inputs.length];
         int index = 0;
         for(Input input : inputs){
             inputValues[index] = input.getValue();
             index++;
         }
-        List<String[]> result = new ArrayList<>();
         if(inputValues.length == 2){
             result.add(inputValues);
             String[] tmp = {inputValues[1], inputValues[0]};
