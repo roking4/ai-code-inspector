@@ -22,7 +22,7 @@ function ResultsComponent(props){
     const [scenarioLength, setScenarioLength] = useState(0);
     const navigate = useNavigate();
     const totalNumberOfScenarios = scenarioLength;
-    const [errors, setErrors] = useState();
+    const [errors, setErrors] = useState(0);
     const [scenarios, setScenarios] = useState(props.scenarios);
     const [displayAlert, setDisplayAlert] = useState(false);
 
@@ -38,10 +38,6 @@ function ResultsComponent(props){
                             setErrors(1);
                         }else {
                             setErrors(errors + 1);
-                        }
-                    }else{
-                        if (!errors) {
-                            setErrors(0);
                         }
                     }
                     const newScenario = scenarios[originalScenario.index];

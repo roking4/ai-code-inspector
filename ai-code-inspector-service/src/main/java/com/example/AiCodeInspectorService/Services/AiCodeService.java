@@ -270,6 +270,9 @@ public class AiCodeService implements IAiCodeService {
                         case "float":
                             Float.parseFloat(combination[i]);
                             break;
+                        case "long":
+                            Long.parseLong(combination[i]);
+                            break;
                         default:
                             combination[i] = "\"" + combination[i] + "\"";
                     }
