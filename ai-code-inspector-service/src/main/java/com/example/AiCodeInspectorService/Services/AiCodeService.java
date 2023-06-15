@@ -94,13 +94,13 @@ public class AiCodeService implements IAiCodeService {
             Scanner myReader = new Scanner(results);
             while (myReader.hasNextLine()) {
                 String line = myReader.nextLine();
-                if(expectedOutput.equalsIgnoreCase(line)){
+                if(expectedOutput.equals(line)){
                     return true;
                 }else{
                     try{
                         double convertedToDouble = Double.parseDouble(expectedOutput);
                         String convertBackToString = Double.toString(convertedToDouble);
-                        if(convertBackToString.equalsIgnoreCase(line)){
+                        if(convertBackToString.equals(line)){
                             return true;
                         }
                     }catch(Exception error){
