@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Code Inspector</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+    <div class="header-container">
+        <h1>AI Code Inspector</h1>
+        <img src="glass.webp" alt="glass">
+    </div>
+    <br>
+    <div class="form-container">
+        <form action="/form/submit" method="GET">
+            <textarea rows="5" cols="60" name="text" placeholder="Prompt to AI"></textarea>
+            <br/>
+            <h2>Test Scenario 1</h2>
+            <div class="io-container">
+            <label>Inputs</label>
+            <input type="text" placeholder="Expected Input"/><button>-</button>
+            <br>
+            <button class="plus-button">+</button>
+            </div>
+            <div class="io-container output-container">
+            <label>Expected Outputs</label>
+            <input type="text" placeholder="Expected Output"/><button>-</button>
+            <br>
+            <button class="plus-button">+</button>
+            </div>
+            <br/>
+            <br/>
+            <button class="scenario-button">Add Scenario</button>
+            <br/>
+            <br/>
+            <input class="submit-button" type="submit" value="submit"/>
+        </form>
+    </div>
+</body>
+</html>

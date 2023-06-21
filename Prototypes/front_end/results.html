@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Code Inspector</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+    <div class="header-container">
+        <h1>AI Code Inspector</h1>
+        <img src="glass.webp" alt="glass">
+    </div>
+    <div class="form-container">
+        <form action="/form/submit" method="GET">
+            <p class="results-code">
+                private void calculateArea(double radius) {<br>
+                &emsp;&emsp;double area = radius * radius * Math.PI;<br>
+                &emsp;&emsp;System.out.println("The area of the circle [radius = " + radius + "]: " + area);<br>
+                }<br>
+                <button class="copy-button">copy</button><br>
+            </p>
+            <div class="results-container">
+                <div class="w3-panel w3-pale-red w3-border">
+                    <p>Failed 1 test!</p>
+                </div>
+                <h2>Test Scenario 1</h2>
+                <label class="results-label">Inputs</label>
+                <p class="p-results">[1]</p>
+                <label class="results-label">Expected Outputs</label>
+                <p class="p-results">[1]</p>
+                &#9989;
+                <h2>Test Scenario 2</h2>
+                <label class="results-label">Inputs</label>
+                <p class="p-results">[2]</p>
+                <label class="results-label">Expected Outputs</label>
+                <p class="p-results">[1]</p>
+                &#10060;
+            </div>
+            <br/>
+            <br/>
+            <input class="submit-button" type="submit" value="Regenerate Code"/>
+            <input class="submit-button" type="submit" value="New Prompt"/>
+        </form>
+    </div>
+</body>
+</html>

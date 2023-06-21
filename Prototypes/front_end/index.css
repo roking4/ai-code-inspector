@@ -1,0 +1,62 @@
+.form-container{
+    margin: auto;
+    max-width: 50%;
+}
+
+h1{
+    max-width: 400px;
+    display: inline-block;
+}
+
+textarea{
+    display: block;
+    margin: auto !important;
+}
+
+h2{
+    margin-left: 2rem;
+}
+
+.submit-button{
+    margin-left: 2rem;
+}
+
+.scenario-button{
+    margin-left: 2rem;
+}
+
+.p-results{
+    display: inline-block;
+    max-width: 10%;
+    margin-right: 2rem;
+}
+
+.results-container{
+    text-align: center;
+}
+
+.results-code{
+    margin-left: 2rem;
+}
+
+img{
+    max-width: 4rem;
+}
+
+.header-container{
+    max-width: 400px;
+    margin: auto;
+}
+
+.copy-button{
+    float: right;
+}
+
+.io-container{
+    max-width: 47%;
+    display: inline-block;
+}
+
+.output-container{
+    padding-left: 2rem;
+}
