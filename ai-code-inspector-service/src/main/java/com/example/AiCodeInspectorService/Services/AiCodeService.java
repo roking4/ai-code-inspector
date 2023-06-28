@@ -13,12 +13,21 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * This service gets and tests the AI generated code from OpenAI
+ */
 @Service
 public class AiCodeService implements IAiCodeService {
 
     @Value("${api_key}")
     private String key;
 
+    /**
+     * This function reaches out to the OpenAI endpoint to get AI generated code
+     *
+     * @param aiCodeRequest
+     * @return aiCodeResponse
+     */
     public AiCodeResponse getAiCode(AiCodeRequest aiCodeRequest){
 
         String code = getCodeFromOpenAi(aiCodeRequest.getPrompt());
@@ -35,7 +44,13 @@ public class AiCodeService implements IAiCodeService {
 
     }
 
-    public AiCodeTestResponse getAiCodeTestResults(AiCodeTestRequest request){
+    /**
+     * This function test the AI generated code by running the user built scenario
+     *
+     * @param aiTestCodeRequest
+     * @return aiTestCodeResponse
+     */
+    public AiTestCodeResponse getAiCodeTestResults(AiTestCodeRequest aiTestCodeRequest){
 
         final String DIRECTORY = "testFiles";
         final String RESULTS_FILE_EXTENSION = ".results";
@@ -47,8 +62,8 @@ public class AiCodeService implements IAiCodeService {
         }
 
         boolean wroteToFile = writeCodeToFile(createdFile,
-                request.getCode().trim(),
-                request.getInputs());
+                aiTestCodeRequest.getCode().trim(),
+                aiTestCodeRequest.getInputs());
 
         if(!wroteToFile){
             return null;
@@ -60,17 +75,23 @@ public class AiCodeService implements IAiCodeService {
             return null;
         }
 
-        boolean result = compareTests(request.getOutput(), resultsFile);
+        boolean result = compareTests(aiTestCodeRequest.getOutput(), resultsFile);
 
-        AiCodeTestResponse aiCodeTestResponse = new AiCodeTestResponse();
-        aiCodeTestResponse.setScenarioResults(result);
+        AiTestCodeResponse aiTestCodeResponse = new AiTestCodeResponse();
+        aiTestCodeResponse.setScenarioResults(result);
 
         fileCleanUp(createdFile, resultsFile);
 
-        return aiCodeTestResponse;
+        return aiTestCodeResponse;
 
     }
 
+    /**
+     * This function strips all the text befor the code from the OpenAI endpoint
+     *
+     * @param code
+     * @return newCode
+     */
     private String stripWordsBeforeActualCode(String code){
         String newCode = "";
         String[] splitPublic = code.split("public ");
@@ -83,12 +104,25 @@ public class AiCodeService implements IAiCodeService {
         return newCode == "" ? code : newCode;
     }
 
+    /**
+     * This function gets the number of inputs from the AI generated code
+     *
+     * @param code
+     * @return methodInputTypes.length
+     */
     private int getNumberOfInputsFromCode(String code){
         String method = getMethodFromCode(code);
         String[] methodInputTypes = getListOfMethodInputTypes(method);
         return methodInputTypes.length;
     }
 
+    /**
+     * This function compares the results from the generated AI code and user inputs with the user's expected output
+     *
+     * @param expectedOutput
+     * @param results
+     * @return
+     */
     private boolean compareTests(String expectedOutput, File results){
         try {
             Scanner myReader = new Scanner(results);
@@ -116,6 +150,12 @@ public class AiCodeService implements IAiCodeService {
         return false;
     }
 
+    /**
+     * This function deletes the files generated during testing the AI generated code
+     *
+     * @param javaFile
+     * @param resultsFile
+     */
     private void fileCleanUp(File javaFile, File resultsFile){
         String fullPath = javaFile.getAbsolutePath();
         String classFileName = fullPath.replace(".java", ".class");
@@ -125,8 +165,14 @@ public class AiCodeService implements IAiCodeService {
         resultsFile.delete();
     }
 
+    /**
+     * This function compiles the Java file created to test the AI generated code
+     *
+     * @param file
+     * @param resultsFileExtension
+     * @return resultsFile
+     */
     private File compileJavaFile(File file, String resultsFileExtension) {
-
         String osName = getOsName().toLowerCase();
         File resultsFile = null;
 
@@ -144,9 +190,15 @@ public class AiCodeService implements IAiCodeService {
             return null;
         }
         return resultsFile;
-
     }
 
+    /**
+     * This function runs the compiled Java file to generate the results file
+     *
+     * @param file
+     * @param resultsFileExtension
+     * @return resultsFile
+     */
     private File runProgram(File file, String resultsFileExtension){
         String fileNameWithoutExtension = file.getName().replace(".java", "");
         String parentDirectory = getParentDirectory(file);
@@ -159,6 +211,12 @@ public class AiCodeService implements IAiCodeService {
         return resultsFile;
     }
 
+    /**
+     * This function starts the process from the ProcessBuilder passed in
+     *
+     * @param processBuilder
+     * @param logFile
+     */
     private void startProcess(ProcessBuilder processBuilder, File logFile){
         try {
             Process process = processBuilder.start();
@@ -173,6 +231,11 @@ public class AiCodeService implements IAiCodeService {
         }
     }
 
+    /**
+     * This function waits for the process to complete before continuing
+     *
+     * @param process
+     */
     private void waitForProcessToComplete(Process process){
         // Wait for the process to complete before running the program
         boolean processComplete = false;
@@ -186,20 +249,46 @@ public class AiCodeService implements IAiCodeService {
         }
     }
 
+    /**
+     * This function creates the results file needed to write the output from the compiled Java file
+     *
+     * @param file
+     * @param resultsExtension
+     * @return resultsFile
+     */
     private File createResultFile(File file, String resultsExtension){
         String filePathWithoutExtension = file.getPath().replace(".java", resultsExtension);
         return new File(filePathWithoutExtension);
     }
 
+    /**
+     * This function gets the parent directory for the file passed in
+     *
+     * @param file
+     * @return
+     */
     private String getParentDirectory(File file){
         String[] splitFile = file.getPath().split("/");
         return splitFile[0];
     }
 
+    /**
+     * This function gets the OS name where the server is running
+     *
+     * @return String
+     */
     private String getOsName(){
         return System.getProperty("os.name");
     }
 
+    /**
+     * This function writes the code to the file along with the user inputs
+     *
+     * @param file
+     * @param code
+     * @param inputs
+     * @return boolean
+     */
     private boolean writeCodeToFile(File file, String code, Input[] inputs){
         String fileName = file.getName();
         String fileNameWithoutExtension = fileName.replace(".java", "");
@@ -231,6 +320,13 @@ public class AiCodeService implements IAiCodeService {
         return false;
     }
 
+    /**
+     * This function takes in the AI generated code and validates the function is static, if not, the function makes the
+     * code static
+     *
+     * @param code
+     * @return String
+     */
     private String validateCode(String code){
         String[] splitCode = code.split("\\s+");
         String newCode = "";
@@ -246,6 +342,14 @@ public class AiCodeService implements IAiCodeService {
         return newCode;
     }
 
+    /**
+     * This function generates a list of all possible inputs by compareing all combinations of user inputs and the actual
+     * input types from the code
+     *
+     * @param inputs
+     * @param methodInputTypes
+     * @return List<String>[]
+     */
     private List<String[]> getActualInputs(Input[] inputs, String[] methodInputTypes){
 
         List<String[]> differentCombinations = generateDifferentCombinations(inputs);
@@ -285,6 +389,14 @@ public class AiCodeService implements IAiCodeService {
         return actualCombinations;
     }
 
+    /**
+     * This function writes the System.out.print lines which contain the method name with the user inputs to the Java
+     * file
+     *
+     * @param myWriter
+     * @param methodName
+     * @param actualInputs
+     */
     private void writeLinesToFile(FileWriter myWriter, String methodName,  List<String[]> actualInputs){
         for( String[] actualInput : actualInputs) {
             String inputs = "";
@@ -302,6 +414,12 @@ public class AiCodeService implements IAiCodeService {
         }
     }
 
+    /**
+     * This function generates all the user input different combinations so the user does not have to worry about order
+     *
+     * @param inputs
+     * @return List<String[]>
+     */
     private static List<String[]> generateDifferentCombinations(Input[] inputs){
 
         List<String[]> result = new ArrayList<>();
@@ -336,6 +454,13 @@ public class AiCodeService implements IAiCodeService {
         return result;
     }
 
+    /**
+     * This funtion swaps the order of the array in a queue to help get the different combinations
+     *
+     * @param startingIndex
+     * @param array
+     * @return String[]
+     */
     private static String[] swap(int startingIndex, String[] array){
         String tmp = array[startingIndex];
         for(int k = startingIndex; k < array.length - 1; k++){
@@ -345,6 +470,12 @@ public class AiCodeService implements IAiCodeService {
         return array;
     }
 
+    /**
+     * This function gets the list of input types from the method to later validate the user inputs
+     *
+     * @param method
+     * @return inputTypes
+     */
     private String[] getListOfMethodInputTypes(String method){
         String[] methodSplit = method.split("\\(");
         String[] allInputs = methodSplit[1].split("\\)");
@@ -358,16 +489,33 @@ public class AiCodeService implements IAiCodeService {
         return inputTypes;
     }
 
+    /**
+     * This function gets the name of the method
+     *
+     * @param method
+     * @return String
+     */
     private String getMethodName(String method){
         String[] splitMethod = method.split("\\s+|\\(");
         return splitMethod[3];
     }
 
+    /**
+     * This function gets the method line from the code
+     * @param code
+     * @return String
+     */
     private String getMethodFromCode(String code){
         String[] splitAiCode = code.split("\\{");
         return splitAiCode[0];
     }
 
+    /**
+     * This function creates the test file that will be written to and compiled
+     *
+     * @param directory
+     * @return File
+     */
     private File createTestFile(String directory){
         int fileNumber = 0;
         String fileName = "";
@@ -393,6 +541,11 @@ public class AiCodeService implements IAiCodeService {
         return file;
     }
 
+    /**
+     * This function creates the testing file directory (if not already created) where all the created files will be
+     *
+     * @param directoryName
+     */
     private void createTestFileirectory(String directoryName){
         File directory = new File(directoryName);
         if(!directory.exists()){
@@ -400,6 +553,12 @@ public class AiCodeService implements IAiCodeService {
         }
     }
 
+    /**
+     * This function gets the code from the OpenAI endpoint
+     *
+     * @param prompt
+     * @return String
+     */
     private String getCodeFromOpenAi(String prompt){
         OpenAiService service = new OpenAiService(key);
         CompletionRequest completionRequest = CompletionRequest.builder()
